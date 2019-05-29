@@ -1,0 +1,15 @@
+# dist
+dist/*
+!dist/.gitkeep
+
+# Mac
+.DS_Store
+
+# IntelliJ IDEA
+.idea
+*.iml
+
+# node.js
+node_modules/
+npm-debug.log
+npm-debug.log.*
