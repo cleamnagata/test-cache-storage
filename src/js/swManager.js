@@ -4,7 +4,6 @@ let registration;
 
 const swManager = {
   register: () => serviceWorker.register('/worker.js')
-    .then(res => res.update())
     .then(res => {
       registration = res;
       if (!navigator.serviceWorker.controller) {
