@@ -40,7 +40,6 @@ const match = (url, ignoreSearch = false) => {
   return openCacheStorage()
     .then(cacheStorage => cacheStorage.match(url, { ignoreSearch }))
     .then(resource => {
-      console.log(resource);
       logWriter.write(`cache.match(${url}). result: ${!!resource}`);
       return resource;
     });
