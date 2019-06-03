@@ -23,6 +23,5 @@ class LogWriter {
 }
 
 const logWriter = new LogWriter();
-window.logWriter = logWriter;
 
 export default logWriter;
