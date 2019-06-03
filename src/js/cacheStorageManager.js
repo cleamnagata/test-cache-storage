@@ -76,6 +76,4 @@ const cacheStorageManager = {
   estimate
 };
 
-window.cacheStorageManager = cacheStorageManager;
-
 export default cacheStorageManager;
