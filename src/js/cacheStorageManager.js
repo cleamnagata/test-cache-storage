@@ -1,43 +1,58 @@
 import logWriter from './logWriter';
 
-const CACHE_STORAGE_NAME = 'cache-test';
+const MAX_SHARD = 5;
 const { caches, navigator } = window;
 
-const openCacheStorage = () => {
-  return caches.open(CACHE_STORAGE_NAME);
+const getShardId = url => {
+  const encoded = (new TextEncoder()).encode(url).reduce((prev, current) => prev + current);
+  return encoded % MAX_SHARD;
 };
 
-const deleteCacheStorage = () => {
-  return caches.delete(CACHE_STORAGE_NAME).then(res => {
-    logWriter.write(`caches.delete(${CACHE_STORAGE_NAME}). result: ${res}`);
+const openCacheStorage = (shardId) => {
+  return caches.open(`cache-test-${shardId}`);
+};
+
+const _deleteCacheStorage = shardId => {
+  return caches.delete(`cache-test-${shardId}`).then(res => {
+    logWriter.write(`caches.delete(cache-test-${shardId}). result: ${res}`);
     return res;
   });
 };
 
+const deleteCacheStorage = () => {
+  const promises = new Array(MAX_SHARD).fill(null).map((_, i) => i).map(shardId => _deleteCacheStorage(shardId));
+  return Promise.all(promises);
+};
+
 const deleteCache = (request) => {
-  return openCacheStorage().then(cacheStorage => cacheStorage.delete(request)).then(res => {
+  return openCacheStorage(getShardId(request.url)).then(cacheStorage => cacheStorage.delete(request)).then(res => {
     logWriter.write(`cache.delete ${request.url}. result: ${res}`);
     return res;
   });
 };
 
-const getKeys = () => {
+const getKeys = (shardId = 0) => {
   // https://developer.mozilla.org/en-US/docs/Web/API/Cache/keys
   // keys という名前だが、Request オブジェクトが帰ってくる
-  return openCacheStorage().then(cacheStorage => cacheStorage.keys()).then(keys => {
-    logWriter.write(`cache.keys(). keys length: ${keys.length}`);
+  return openCacheStorage(shardId).then(cacheStorage => cacheStorage.keys()).then(keys => {
+    logWriter.write(`cache.keys(${shardId}). keys length: ${keys.length}`);
     return keys;
   });
 };
 
-const deleteAllCache = () => {
-  return getKeys().then(requests => {
+const _deleteAllCache = shardId => {
+  return getKeys(shardId).then(requests => {
     return Promise.all(requests.map(request => deleteCache(request)));
   });
 };
 
+const deleteAllCache = () => {
+  const promises = new Array(MAX_SHARD).fill(null).map((_, i) => i).map(shardId => _deleteAllCache(shardId));
+  return Promise.all(promises);
+};
+
 const match = (url, ignoreSearch = false) => {
-  return openCacheStorage()
+  return openCacheStorage(getShardId(url))
     .then(cacheStorage => cacheStorage.match(url, { ignoreSearch }))
     .then(resource => {
       logWriter.write(`cache.match(${url}). result: ${!!resource}`);
@@ -46,7 +61,7 @@ const match = (url, ignoreSearch = false) => {
 };
 
 const matchAll = (url, ignoreSearch = false) => {
-  return openCacheStorage()
+  return openCacheStorage(getShardId(url))
     .then(cacheStorage => cacheStorage.matchAll(url, { ignoreSearch }))
     .then(resource => {
       logWriter.write(`cache.matchAll(${url}). result: ${resource.length}`);

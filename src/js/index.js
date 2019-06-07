@@ -4,8 +4,8 @@ import logWriter from './logWriter';
 
 const config = {
   RESOURCE: '/assets/test2.json',
-  VERSIONS: new Array(2000).fill(null).map((_, i) => i), // 最大数
-  LOAD_QUE: 6, // 同時に投げる上限
+  VERSIONS: new Array(10000).fill(null).map((_, i) => i), // 最大数
+  LOAD_QUE: 10, // 同時に投げる上限
 };
 
 const chunk = (arr, size) => arr.reduce((chunks, el, i) => (i % size ? chunks[chunks.length - 1].push(el) : chunks.push([el])) && chunks, []);
