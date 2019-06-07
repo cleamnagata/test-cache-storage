@@ -74,6 +74,7 @@ const match = (url, ignoreSearch = false) => {
 };
 
 const matchAll = (url, ignoreSearch = false) => {
+  logWriter.write(`matchAll. ignoreSearch: ${ignoreSearch}`);
   performanceHelper.start();
   return openCacheStorage(getShardId(url))
     .then(cacheStorage => cacheStorage.matchAll(url, { ignoreSearch }))

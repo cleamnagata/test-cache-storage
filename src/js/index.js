@@ -35,7 +35,6 @@ const fetchResources = () => {
 
 // caches.delete(storageKey) 実行し、estimate の値がどのくらい変わるかを計測する
 const deleteCacheStorageAndEstimate = () => {
-  logWriter.clear();
   return Promise.resolve()
     .then(cacheStorageManager.estimate)
     .then(cacheStorageManager.deleteCacheStorage)
@@ -44,7 +43,6 @@ const deleteCacheStorageAndEstimate = () => {
 
 // cache.delete(url) 実行し、estimate の値がどのくらい変わるかを計測する
 const deleteCacheAndEstimate = () => {
-  logWriter.clear();
   return Promise.resolve()
     .then(cacheStorageManager.estimate)
     .then(cacheStorageManager.deleteAllCache)
@@ -69,14 +67,12 @@ const matchResource = () => {
 };
 
 const matchResourceWithOutQuery = () => {
-  logWriter.clear();
   logWriter.write('start matchResourceWithOutQuery.');
   return Promise.resolve()
     .then(() => cacheStorageManager.match(MATCH_URL, true));
 };
 
 const matchAllResourceWithOutQuery = () => {
-  logWriter.clear();
   logWriter.write('start matchAllResourceWithOutQuery.');
   return Promise.resolve()
     .then(() => cacheStorageManager.matchAll(MATCH_URL, true));
@@ -100,7 +96,6 @@ const setUpButtons = () => {
   // cache keys を取得する。低スペックなスマホで、大量にcacheがある状態だと、`DOMException` 発生する事がある。
   const buttonKeys = createButton('cache keys');
   buttonKeys.onclick = () => {
-    logWriter.clear();
     logWriter.write('start getKeys');
     cacheStorageManager.getKeys().then(resources => {
       resources.forEach(resource => logWriter.write(`url: ${resource.url}`));
