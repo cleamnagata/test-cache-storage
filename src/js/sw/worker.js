@@ -1,5 +1,5 @@
-const CACHE_STORAGE_NAME = 'cache-test';
 const ASSET_DIR_NAME = 'assets';
+const MAX_SHARD = 5;
 
 self.addEventListener('install', event => {
   console.log('install');
@@ -15,8 +15,11 @@ self.addEventListener('fetch', event => {
   const url = event.request.url;
   if (!url.includes(ASSET_DIR_NAME)) return;
 
+  const encoded = (new TextEncoder()).encode(url).reduce((prev, current) => prev + current);
+  const storageKey = `cache-test-${encoded % MAX_SHARD}`;
+
   event.respondWith(
-    caches.open(CACHE_STORAGE_NAME).then(cache => {
+    caches.open(storageKey).then(cache => {
       return cache.match(event.request).then(responseCache => {
         if (responseCache) {
           return responseCache;
