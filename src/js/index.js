@@ -81,21 +81,16 @@ const matchAllResourceWithOutQuery = () => {
 logWriter.setUpDom();
 
 const setUpButtons = () => {
-  const buttonClearLog = createButton('clearLog');
-  buttonClearLog.onclick = () => {
-    logWriter.clear();
-  };
+  createButton('clearLog').onclick = () => logWriter.clear();
 
   // estimate
-  const buttonEstimate = createButton('estimate');
-  buttonEstimate.onclick = () => {
+  createButton('estimate').onclick = () => {
     logWriter.clear();
     cacheStorageManager.estimate();
   };
 
   // cache keys を取得する。低スペックなスマホで、大量にcacheがある状態だと、`DOMException` 発生する事がある。
-  const buttonKeys = createButton('cache keys');
-  buttonKeys.onclick = () => {
+  createButton('cache keys').onclick = () => {
     logWriter.write('start getKeys');
     cacheStorageManager.getKeys().then(resources => {
       resources.forEach(resource => logWriter.write(`url: ${resource.url}`));
@@ -104,28 +99,22 @@ const setUpButtons = () => {
   };
 
   // resources 取得。query 毎にユニークにキャッシュされる事を利用し、大量に読み込む
-  const buttonLoadResources = createButton('loadResources');
-  buttonLoadResources.onclick = () => fetchResources();
+  createButton('loadResources').onclick = fetchResources;
 
   // クエリパラメータまで完全一致で検索する ( 一番初めに見つかったものを返却する )
-  const buttonMatchResource = createButton('matchResource');
-  buttonMatchResource.onclick = () => matchResource();
+  createButton('matchResource').onclick = matchResource;
 
   // クエリパラメータを無視して検索する ( 一番初めに見つかったものを返却する )
-  const buttonMatchResourceWithOutQuery = createButton('matchResourceWithOutQuery');
-  buttonMatchResourceWithOutQuery.onclick = () => matchResourceWithOutQuery();
+  createButton('matchResourceWithOutQuery').onclick = matchResourceWithOutQuery;
 
   // クエリパラメータを無視して検索する ( 別バージョンの同一リソース取得時等 )
-  const buttonMatchAllResourceWithOutQuery = createButton('matchAllResourceWithOutQuery');
-  buttonMatchAllResourceWithOutQuery.onclick = () => matchAllResourceWithOutQuery();
+  createButton('matchAllResourceWithOutQuery').onclick = matchAllResourceWithOutQuery;
 
   // 読み込んで、即座に消しても caches.delete() だと estimate で取れる値は変わらない
-  const buttonDeleteCacheStorageAndEstimate = createButton('deleteCacheStorageAndEstimate');
-  buttonDeleteCacheStorageAndEstimate.onclick = () => deleteCacheStorageAndEstimate();
+  createButton('deleteCacheStorageAndEstimate').onclick = deleteCacheStorageAndEstimate;
 
   // 読み込んで、全ての key に対して削除を回せば、estimate で正確な値が取れる
-  const buttonDeleteCacheAndEstimate = createButton('deleteCacheAndEstimate');
-  buttonDeleteCacheAndEstimate.onclick = () => deleteCacheAndEstimate();
+  createButton('deleteCacheAndEstimate').onclick = deleteCacheAndEstimate;
 };
 
 swManager.register().then(register => {
