@@ -2,6 +2,7 @@ import swManager from './swManager';
 import cacheStorageManager from './cacheStorageManager';
 import logWriter from './logWriter';
 import performanceHelper from './performanceHelper';
+import persistHelper from './persistHelper';
 
 const config = {
   RESOURCE: '/assets/test2.json',
@@ -78,9 +79,15 @@ const matchAllResourceWithOutQuery = () => {
     .then(() => cacheStorageManager.matchAll(MATCH_URL, true));
 };
 
-logWriter.setUpDom();
+const setUpButtons = persisted => {
+  const persistMessage = persisted
+    ? 'Storage will not be cleared except by explicit user action. success persist'
+    : 'Storage may be cleared by the UA under storage pressure.';
+  const div = document.createElement('div');
+  const text = document.createTextNode(persistMessage);
+  div.appendChild(text);
+  document.body.appendChild(div);
 
-const setUpButtons = () => {
   createButton('clearLog').onclick = () => logWriter.clear();
 
   // estimate
@@ -117,10 +124,14 @@ const setUpButtons = () => {
   createButton('deleteCacheAndEstimate').onclick = deleteCacheAndEstimate;
 };
 
+logWriter.setUpDom();
+
 swManager.register().then(register => {
   if (!register) {
     logWriter.write('register not completed');
     return;
   }
-  setUpButtons();
+  persistHelper.persist().then(persisted => {
+    setUpButtons(persisted);
+  });
 });
