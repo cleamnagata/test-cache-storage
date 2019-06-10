@@ -20,6 +20,7 @@ const persist = () => {
     storage.persisted(),
     permissions.query({ name: 'persistent-storage' })
   ]).then(([persisted, permission]) => {
+    console.log(persisted, permission);
     if (!!persisted) {
       return Promise.resolve(true);
     }
