@@ -10,6 +10,7 @@ module.exports = {
   output: {
     path: DIST
   },
+  devtool: 'source-map',
   devServer: {
     contentBase: DIST,
     port: 9000,
