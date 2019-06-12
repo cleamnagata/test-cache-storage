@@ -52,6 +52,7 @@ export default class StressTestChart {
           yAxes: [{
             ticks: {
               beginAtZero: true,
+              stepSize: 20,
               callback: (value, index, values) => {
                 return `${value} ms`
               },
