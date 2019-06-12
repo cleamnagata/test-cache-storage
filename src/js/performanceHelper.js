@@ -4,6 +4,11 @@ class PerformanceHelper {
   constructor() {
     this._startKey = 'start';
     this._endKey = 'end';
+    this._lastDiff = null;
+  }
+
+  get lastDiff() {
+    return this._lastDiff;
   }
 
   start() {
@@ -17,11 +22,11 @@ class PerformanceHelper {
    */
   stop() {
     performance.mark(this._endKey);
-    performance.measure('deleteTime', this._startKey, this._endKeyKey);
-    const diff = performance.getEntriesByType('measure')[0];
+    performance.measure('performanceMeasure', this._startKey, this._endKey);
+    this._lastDiff = performance.getEntriesByType('measure')[0];
     performance.clearMarks();
     performance.clearMeasures();
-    return diff;
+    return this._lastDiff;
   }
 }
 

@@ -1,7 +1,8 @@
 import logWriter from './logWriter';
 import performanceHelper from './performanceHelper';
+import config from './config';
 
-const MAX_SHARD = 5;
+const { MAX_SHARD } = config;
 const SHARD_IDS = new Array(MAX_SHARD).fill(null).map((_, i) => i);
 const { caches, navigator } = window;
 

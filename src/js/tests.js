@@ -8,10 +8,10 @@ const chunk = (arr, size) => arr.reduce((chunks, el, i) => (i % size ? chunks[ch
 const fetchResource = ver => fetch(`${config.RESOURCE}?v=${ver}`);
 
 // VERSIONS 分リクエスト投げて cache に詰める
-export const fetchResources = () => {
-  logWriter.write(`start fetchResources. resourcesLength: ${config.VERSIONS.length}`);
+export const fetchResources = (versions = config.VERSIONS) => {
+  logWriter.write(`start fetchResources. resourcesLength: ${versions.length}`);
   performanceHelper.start();
-  return chunk(config.VERSIONS, config.LOAD_QUE)
+  return chunk(versions, config.LOAD_QUE)
     .map(versions => () => {
       const promises = versions.map(version => fetchResource(version));
       return Promise.all(promises);
@@ -19,7 +19,6 @@ export const fetchResources = () => {
     .reduce((prev, curr) => prev.then(() => curr && curr()), Promise.resolve())
     .then(() => {
       const diff = performanceHelper.stop();
-      console.log(diff);
       logWriter.write(`fetchResources complete. duration: ${diff.duration}`);
     })
 };
@@ -61,8 +60,7 @@ export const matchAllResourceWithOutQuery = () => {
 
 export const getKeys = () => {
   logWriter.write('start getKeys');
-  cacheStorageManager.getAllKeys().then(resources => {
-    console.log(resources);
+  return cacheStorageManager.getAllKeys().then(resources => {
     logWriter.write(`keys.length ${resources.length}`);
     logWriter.write('end getKeys');
   });
