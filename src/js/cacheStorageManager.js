@@ -1,7 +1,8 @@
 import logWriter from './logWriter';
 import performanceHelper from './performanceHelper';
+import config from './config';
 
-const MAX_SHARD = 5;
+const { MAX_SHARD } = config;
 const SHARD_IDS = new Array(MAX_SHARD).fill(null).map((_, i) => i);
 const { caches, navigator } = window;
 
@@ -40,6 +41,11 @@ const getKeys = (shardId = 0) => {
     // logWriter.write(`cache.keys(${shardId}). keys length: ${keys.length}`);
     return keys;
   });
+};
+
+const getAllKeys = () => {
+  return Promise.all(SHARD_IDS.map(shardId => getKeys(shardId)))
+    .then(responses => [].concat(...responses));
 };
 
 const _deleteAllCache = shardId => {
@@ -101,6 +107,7 @@ const cacheStorageManager = {
   deleteCacheStorage,
   deleteCache,
   getKeys,
+  getAllKeys,
   deleteAllCache,
   match,
   matchAll,

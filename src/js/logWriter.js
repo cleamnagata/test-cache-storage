@@ -7,7 +7,7 @@ class LogWriter {
     this._dom = document.createElement('textarea');
     this._dom.setAttribute('disabled', '');
     this._dom.style.width = '80%';
-    this._dom.style.height = '500px';
+    this._dom.style.height = '400px';
     const div = document.createElement('div');
     div.appendChild(this._dom);
     document.body.appendChild(div);

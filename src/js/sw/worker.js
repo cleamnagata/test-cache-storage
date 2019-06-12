@@ -1,5 +1,5 @@
 const ASSET_DIR_NAME = 'assets';
-const MAX_SHARD = 5;
+const MAX_SHARD = 1;
 
 self.addEventListener('install', event => {
   console.log('install');
