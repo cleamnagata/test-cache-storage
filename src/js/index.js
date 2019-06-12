@@ -1,112 +1,31 @@
 import swManager from './swManager';
-import cacheStorageManager from './cacheStorageManager';
 import logWriter from './logWriter';
-import performanceHelper from './performanceHelper';
 import persistHelper from './persistHelper';
-
-const config = {
-  RESOURCE: '/assets/test2.json',
-  VERSIONS: new Array(10000).fill(null).map((_, i) => i), // 最大数
-  LOAD_QUE: 10, // 同時に投げる上限
-};
-
-const chunk = (arr, size) => arr.reduce((chunks, el, i) => (i % size ? chunks[chunks.length - 1].push(el) : chunks.push([el])) && chunks, []);
-
-const fetchResource = ver => fetch(`${config.RESOURCE}?v=${ver}`).then(res => {
-  // logWriter.write(`loaded. ${config.RESOURCE}?v=${ver}`);
-  return res;
-});
-
-// VERSIONS 分リクエスト投げて cache に詰める
-const fetchResources = () => {
-  logWriter.write(`start fetchResources. resourcesLength: ${config.VERSIONS.length}`);
-  performanceHelper.start();
-  return chunk(config.VERSIONS, config.LOAD_QUE)
-    .map(versions => () => {
-      const promises = versions.map(version => fetchResource(version));
-      return Promise.all(promises);
-    })
-    .reduce((prev, curr) => prev.then(() => curr && curr()), Promise.resolve())
-    .then(() => {
-      const diff = performanceHelper.stop();
-      console.log(diff);
-      logWriter.write(`fetchResources complete. duration: ${diff.duration}`);
-    })
-};
-
-// caches.delete(storageKey) 実行し、estimate の値がどのくらい変わるかを計測する
-const deleteCacheStorageAndEstimate = () => {
-  return Promise.resolve()
-    .then(cacheStorageManager.estimate)
-    .then(cacheStorageManager.deleteCacheStorage)
-    .then(cacheStorageManager.estimate);
-};
-
-// cache.delete(url) 実行し、estimate の値がどのくらい変わるかを計測する
-const deleteCacheAndEstimate = () => {
-  return Promise.resolve()
-    .then(cacheStorageManager.estimate)
-    .then(cacheStorageManager.deleteAllCache)
-    .then(cacheStorageManager.estimate);
-};
-
-const createButton = message => {
-  const div = document.createElement('div');
-  const button = document.createElement('button');
-  const text = document.createTextNode(message);
-  button.appendChild(text);
-  div.appendChild(button);
-  document.body.appendChild(div);
-  return button;
-};
-
-const MATCH_URL = `${window.location.origin}${config.RESOURCE}?v=${config.VERSIONS[config.VERSIONS.length - 1]}`;
-
-const matchResource = () => {
-  return Promise.resolve()
-    .then(() => cacheStorageManager.match(MATCH_URL));
-};
-
-const matchResourceWithOutQuery = () => {
-  logWriter.write('start matchResourceWithOutQuery.');
-  return Promise.resolve()
-    .then(() => cacheStorageManager.match(MATCH_URL, true));
-};
-
-const matchAllResourceWithOutQuery = () => {
-  logWriter.write('start matchAllResourceWithOutQuery.');
-  return Promise.resolve()
-    .then(() => cacheStorageManager.matchAll(MATCH_URL, true));
-};
+import createButton from './util/createButton';
+import createPersistMessage from './util/createPersistMessage';
+import {
+  estimate,
+  getKeys,
+  fetchResources,
+  matchResource,
+  matchResourceWithOutQuery,
+  matchAllResourceWithOutQuery,
+  deleteCacheAndEstimate,
+  deleteCacheStorageAndEstimate,
+} from './tests';
 
 const setUpButtons = persisted => {
-  const persistMessage = persisted
-    ? 'Storage will not be cleared except by explicit user action. success persist'
-    : 'Storage may be cleared by the UA under storage pressure.';
-  const div = document.createElement('div');
-  div.style.color = persisted
-    ? '#0500ff'
-    : '#ff0000';
-  const text = document.createTextNode(persistMessage);
-  div.appendChild(text);
-  document.body.appendChild(div);
+  createPersistMessage(persisted);
+
+  logWriter.setUpDom();
 
   createButton('clearLog').onclick = () => logWriter.clear();
 
   // estimate
-  createButton('estimate').onclick = () => {
-    logWriter.clear();
-    cacheStorageManager.estimate();
-  };
+  createButton('estimate').onclick = estimate;
 
   // cache keys を取得する。低スペックなスマホで、大量にcacheがある状態だと、`DOMException` 発生する事がある。
-  createButton('cache keys').onclick = () => {
-    logWriter.write('start getKeys');
-    cacheStorageManager.getKeys().then(resources => {
-      resources.forEach(resource => logWriter.write(`url: ${resource.url}`));
-      logWriter.write('end getKeys');
-    });
-  };
+  createButton('get keys').onclick = getKeys;
 
   // resources 取得。query 毎にユニークにキャッシュされる事を利用し、大量に読み込む
   createButton('loadResources').onclick = fetchResources;
@@ -127,14 +46,11 @@ const setUpButtons = persisted => {
   createButton('deleteCacheAndEstimate').onclick = deleteCacheAndEstimate;
 };
 
-logWriter.setUpDom();
 
 swManager.register().then(register => {
   if (!register) {
     logWriter.write('register not completed');
     return;
   }
-  persistHelper.persist().then(persisted => {
-    setUpButtons(persisted);
-  });
+  persistHelper.persist().then(setUpButtons);
 });
