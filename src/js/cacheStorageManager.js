@@ -42,6 +42,11 @@ const getKeys = (shardId = 0) => {
   });
 };
 
+const getAllKeys = () => {
+  return Promise.all(SHARD_IDS.map(shardId => getKeys(shardId)))
+    .then(responses => [].concat(...responses));
+};
+
 const _deleteAllCache = shardId => {
   return getKeys(shardId).then(requests => {
     return Promise.all(requests.map(request => deleteCache(request)));
@@ -101,6 +106,7 @@ const cacheStorageManager = {
   deleteCacheStorage,
   deleteCache,
   getKeys,
+  getAllKeys,
   deleteAllCache,
   match,
   matchAll,

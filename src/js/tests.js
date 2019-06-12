@@ -61,7 +61,7 @@ export const matchAllResourceWithOutQuery = () => {
 
 export const getKeys = () => {
   logWriter.write('start getKeys');
-  cacheStorageManager.getKeys().then(resources => {
+  cacheStorageManager.getAllKeys().then(resources => {
     console.log(resources);
     logWriter.write(`keys.length ${resources.length}`);
     logWriter.write('end getKeys');
