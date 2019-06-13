@@ -2,6 +2,9 @@
 dist/*
 !dist/.gitkeep
 
+# dummy
+assets/dummy*
+
 # Mac
 .DS_Store
 
