@@ -39,7 +39,7 @@ export const deleteCacheAndEstimate = () => {
     .then(cacheStorageManager.estimate);
 };
 
-const MATCH_URL = `${window.location.origin}${config.RESOURCE}?v=${config.VERSIONS[config.VERSIONS.length - 1]}`;
+const MATCH_URL = config.MATCH_URL;
 
 export const matchResource = () => {
   return Promise.resolve()

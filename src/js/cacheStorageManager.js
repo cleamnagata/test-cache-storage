@@ -7,7 +7,7 @@ const SHARD_IDS = new Array(MAX_SHARD).fill(null).map((_, i) => i);
 const { caches, navigator } = window;
 
 const getShardId = url => {
-  const encoded = (new TextEncoder()).encode(url).reduce((prev, current) => prev + current);
+  const encoded = (new TextEncoder()).encode(new URL(url).pathname).reduce((prev, current) => prev + current);
   return encoded % MAX_SHARD;
 };
 
@@ -71,7 +71,7 @@ const match = (url, ignoreSearch = false) => {
   logWriter.write(`match. ignoreSearch: ${ignoreSearch}, shardId: ${shardId}  start`);
   performanceHelper.start();
   return openCacheStorage(shardId)
-    .then(cacheStorage => cacheStorage.match(url, { ignoreSearch }))
+    .then(cacheStorage => cacheStorage.match(new URL(url).pathname, { ignoreSearch }))
     .then(resource => {
       const diff = performanceHelper.stop();
       logWriter.write(`cache.match(${url}). result: ${!!resource} \n duration: ${diff.duration}`);
@@ -83,7 +83,7 @@ const matchAll = (url, ignoreSearch = false) => {
   logWriter.write(`matchAll. ignoreSearch: ${ignoreSearch}`);
   performanceHelper.start();
   return openCacheStorage(getShardId(url))
-    .then(cacheStorage => cacheStorage.matchAll(url, { ignoreSearch }))
+    .then(cacheStorage => cacheStorage.matchAll(new URL(url).pathname, { ignoreSearch }))
     .then(resource => {
       const diff = performanceHelper.stop();
       logWriter.write(`cache.matchAll(${url}). resultLength: ${resource.length}\n duration: ${diff.duration}`);
