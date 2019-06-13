@@ -73,7 +73,8 @@ class Tester {
   }
 
   _testMatchResource() {
-    return cacheStorageManager.matchAll(MATCH_URL, true)
+    // return cacheStorageManager.matchAll(MATCH_URL, true)
+    return cacheStorageManager.match(MATCH_URL)
       .then(() => {
         this._results.push({
           length: this._versions.length,
