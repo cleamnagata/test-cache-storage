@@ -4,8 +4,9 @@
   "description": "test for CacheStorage",
   "main": "src/js/index.js",
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack"
+    "start": "yarn createDummy && webpack-dev-server",
+    "build": "yarn createDummy && webpack",
+    "createDummy": "node createDummy.js"
   },
   "author": "",
   "license": "ISC",

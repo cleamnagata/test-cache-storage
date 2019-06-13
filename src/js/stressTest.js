@@ -6,7 +6,7 @@ import { fetchResources, getKeys } from './tests';
 import config from './config';
 import fillArray from './util/fillArray';
 
-const { RESOURCE, STRESS_TEST_PER } = config;
+const { STRESS_TEST_PER, MATCH_URL } = config;
 
 class Tester {
   constructor(maxResources) {
@@ -73,7 +73,8 @@ class Tester {
   }
 
   _testMatchResource() {
-    return cacheStorageManager.matchAll(RESOURCE, true)
+    // return cacheStorageManager.matchAll(MATCH_URL, true)
+    return cacheStorageManager.match(MATCH_URL)
       .then(() => {
         this._results.push({
           length: this._versions.length,
