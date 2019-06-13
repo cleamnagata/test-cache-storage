@@ -5,7 +5,8 @@ import config from './config';
 
 const chunk = (arr, size) => arr.reduce((chunks, el, i) => (i % size ? chunks[chunks.length - 1].push(el) : chunks.push([el])) && chunks, []);
 
-const fetchResource = ver => fetch(`${config.RESOURCE}?v=${ver}`);
+// const fetchResource = ver => fetch(`${config.RESOURCE}?v=${ver}`);
+const fetchResource = ver => fetch(`${config.DUMMY_RESOURCE_PREFIX}${ver}.txt`);
 
 // VERSIONS 分リクエスト投げて cache に詰める
 export const fetchResources = (versions = config.VERSIONS) => {
