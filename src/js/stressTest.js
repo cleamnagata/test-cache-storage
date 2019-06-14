@@ -1,7 +1,7 @@
-import StressTestChart from './StressTestChart';
-import logWriter from './logWriter';
-import performanceHelper from './performanceHelper';
-import cacheStorageManager from './cacheStorageManager';
+import StressTestChart from './util/StressTestChart';
+import logWriter from './util/logWriter';
+import performanceHelper from './util/performanceHelper';
+import cacheStorageManager from './util/cacheStorageManager';
 import { fetchResources, getKeys } from './tests';
 import config from './config';
 import fillArray from './util/fillArray';
