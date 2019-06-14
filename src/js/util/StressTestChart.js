@@ -14,7 +14,7 @@ export default class StressTestChart {
       this._canvas.width = 400;
       this._canvas.height = 400;
       this._canvas.id = CANVAS_ID;
-      document.body.appendChild(this._canvas);
+      document.getElementById('canvasWrap').appendChild(this._canvas);
     }
   }
 

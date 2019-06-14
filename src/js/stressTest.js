@@ -56,26 +56,10 @@ class Tester {
     logWriter.write(`\n\n+++resourcesLength: ${this._versions.length}+++`);
     return fetchResources(this._versions.filter(v => !loadedVersions.includes(v)))
       .then(() => getKeys())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource());
+      .then(() => {
+        const matchResourceTests = fillArray(50).map(_ => () => this._testMatchResource());
+        return matchResourceTests.reduce((p, n) => p.then(n), Promise.resolve());
+      });
   }
 
   _testMatchResource() {

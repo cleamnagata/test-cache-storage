@@ -47,8 +47,15 @@ const setUpButtons = persisted => {
   // 読み込んで、全ての key に対して削除を回せば、estimate で正確な値が取れる
   createButton('deleteCacheAndEstimate').onclick = deleteCacheAndEstimate;
 
+  document.body.appendChild(document.createElement('hr'));
+
   // 大量のリソースを cacheStorageに詰め、cache matchAll のパフォーマンスを測定する
   createButton('stressTest').onclick = () => stressTest(config.STRESS_TEST_RESOURCE_LENGTH);
+  const canvasWrapDiv = document.createElement('div');
+  canvasWrapDiv.id = 'canvasWrap';
+  document.body.appendChild(canvasWrapDiv);
+
+  document.body.appendChild(document.createElement('hr'));
 };
 
 
