@@ -108,6 +108,7 @@ const cacheStorageManager = {
   deleteCache,
   getKeys,
   getAllKeys,
+  getShardId,
   deleteAllCache,
   match,
   matchAll,

@@ -1,6 +1,12 @@
-const createForm = (formName, values, cb) => {
+/**
+ * @param formName
+ * @param values
+ * @return {{select: HTMLSelectElement, wrapDiv: HTMLDivElement}}
+ */
+const createForm = (formName, values) => {
   const div = document.createElement('div');
   const form = document.createElement('form');
+  form.name = formName;
   const select = document.createElement('select');
   form.appendChild(select);
   values.forEach(v => {
@@ -9,15 +15,8 @@ const createForm = (formName, values, cb) => {
     option.innerText = v;
     select.appendChild(option);
   });
-  const button = document.createElement('button');
-  button.innerText = formName;
-  button.onclick = () => {
-    const num = select.selectedIndex;
-    cb(select.options[num].value);
-  };
   div.appendChild(form);
-  div.appendChild(button);
-  document.body.appendChild(div);
+  return { select, wrapDiv: div };
 };
 
 export default createForm;

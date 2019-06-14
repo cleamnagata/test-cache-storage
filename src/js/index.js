@@ -5,6 +5,7 @@ import persistHelper from './util/persistHelper';
 import stressTest from './stressTest';
 import createButton from './util/createButton';
 import createPersistMessage from './util/createPersistMessage';
+import createDummyCacheForm from './util/createDummyCacheForm';
 import {
   estimate,
   getKeys,
@@ -56,6 +57,8 @@ const setUpButtons = persisted => {
   document.body.appendChild(canvasWrapDiv);
 
   document.body.appendChild(document.createElement('hr'));
+
+  document.body.appendChild(createDummyCacheForm());
 };
 
 
