@@ -30,7 +30,13 @@ class Tester {
 
   _apply() {
     let isLast = false;
-    let length = this._versions.length + STRESS_TEST_PER;
+    let length;
+    if (this._versions.length < 1000) {
+      length = this._versions.length + STRESS_TEST_PER;
+    }
+    else {
+      length = this._versions.length + (STRESS_TEST_PER * 10);
+    }
     if (length > this._maxResourceLength) {
       length = this._maxResourceLength;
       isLast = true;
