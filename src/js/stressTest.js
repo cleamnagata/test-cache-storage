@@ -1,7 +1,7 @@
-import StressTestChart from './StressTestChart';
-import logWriter from './logWriter';
-import performanceHelper from './performanceHelper';
-import cacheStorageManager from './cacheStorageManager';
+import StressTestChart from './util/StressTestChart';
+import logWriter from './util/logWriter';
+import performanceHelper from './util/performanceHelper';
+import cacheStorageManager from './util/cacheStorageManager';
 import { fetchResources, getKeys } from './tests';
 import config from './config';
 import fillArray from './util/fillArray';
@@ -30,7 +30,13 @@ class Tester {
 
   _apply() {
     let isLast = false;
-    let length = this._versions.length + STRESS_TEST_PER;
+    let length;
+    if (this._versions.length < 1000) {
+      length = this._versions.length + STRESS_TEST_PER;
+    }
+    else {
+      length = this._versions.length + (STRESS_TEST_PER * 10);
+    }
     if (length > this._maxResourceLength) {
       length = this._maxResourceLength;
       isLast = true;
@@ -50,26 +56,10 @@ class Tester {
     logWriter.write(`\n\n+++resourcesLength: ${this._versions.length}+++`);
     return fetchResources(this._versions.filter(v => !loadedVersions.includes(v)))
       .then(() => getKeys())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource())
-      .then(() => this._testMatchResource());
+      .then(() => {
+        const matchResourceTests = fillArray(50).map(_ => () => this._testMatchResource());
+        return matchResourceTests.reduce((p, n) => p.then(n), Promise.resolve());
+      });
   }
 
   _testMatchResource() {

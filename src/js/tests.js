@@ -1,6 +1,6 @@
-import logWriter from './logWriter';
-import performanceHelper from './performanceHelper';
-import cacheStorageManager from './cacheStorageManager';
+import logWriter from './util/logWriter';
+import performanceHelper from './util/performanceHelper';
+import cacheStorageManager from './util/cacheStorageManager';
 import config from './config';
 
 const chunk = (arr, size) => arr.reduce((chunks, el, i) => (i % size ? chunks[chunks.length - 1].push(el) : chunks.push([el])) && chunks, []);
