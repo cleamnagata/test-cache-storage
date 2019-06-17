@@ -3,12 +3,13 @@ import Chart from 'chart.js';
 const CANVAS_ID = 'stressTestChard';
 
 export default class StressTestChart {
-  constructor({ averages, labels, maxList, minList }) {
+  constructor({ averages, labels, maxList, minList, useMatch }) {
     this._averages = averages;
     this._labels = labels;
     this._maxList = maxList;
     this._minList = minList;
     this._canvas = document.getElementById(CANVAS_ID);
+    this._useMatch = useMatch;
     if (!this._canvas) {
       this._canvas = document.createElement('canvas');
       this._canvas.width = 400;
@@ -46,7 +47,7 @@ export default class StressTestChart {
       options: {
         title: {
           display: true,
-          text: 'cacheStorage.match(url, { ignoreSearch: true }). performance'
+          text: `cacheStorage.${this._useMatch ? 'match' : 'matchAll'}(url, { ignoreSearch: true }). performance`
         },
         scales: {
           yAxes: [{

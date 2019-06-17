@@ -50,8 +50,12 @@ const setUpButtons = persisted => {
 
   document.body.appendChild(document.createElement('hr'));
 
+  // 大量のリソースを cacheStorageに詰め、cache match のパフォーマンスを測定する
+  createButton('stressTest. useMatch').onclick = () => stressTest.useMatch(config.STRESS_TEST_RESOURCE_LENGTH);
+
   // 大量のリソースを cacheStorageに詰め、cache matchAll のパフォーマンスを測定する
-  createButton('stressTest').onclick = () => stressTest(config.STRESS_TEST_RESOURCE_LENGTH);
+  createButton('stressTest. useMatchALl').onclick = () => stressTest.useMatchAll(config.STRESS_TEST_RESOURCE_LENGTH);
+
   const canvasWrapDiv = document.createElement('div');
   canvasWrapDiv.id = 'canvasWrap';
   document.body.appendChild(canvasWrapDiv);

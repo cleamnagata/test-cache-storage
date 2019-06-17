@@ -9,10 +9,11 @@ import fillArray from './util/fillArray';
 const { STRESS_TEST_PER, MATCH_URL } = config;
 
 class Tester {
-  constructor(maxResources) {
+  constructor(maxResources, useMatch) {
     if (maxResources % STRESS_TEST_PER !== 0) {
       throw new Error('invalidParam');
     }
+    this._useMatch = useMatch;
     this._maxResourceLength = maxResources;
     this._versions = [];
     this._results = [];
@@ -63,15 +64,16 @@ class Tester {
   }
 
   _testMatchResource() {
-    // return cacheStorageManager.matchAll(MATCH_URL, true)
-    return cacheStorageManager.match(MATCH_URL)
-      .then(() => {
-        this._results.push({
-          length: this._versions.length,
-          duration: performanceHelper.lastDiff.duration,
-          performanceMeasure: performanceHelper.lastDiff,
-        });
+    const matchPromise = (this._useMatch)
+      ? cacheStorageManager.match(MATCH_URL)
+      : cacheStorageManager.matchAll(MATCH_URL, true);
+    return matchPromise.then(() => {
+      this._results.push({
+        length: this._versions.length,
+        duration: performanceHelper.lastDiff.duration,
+        performanceMeasure: performanceHelper.lastDiff,
       });
+    });
   }
 
   _onComplete() {
@@ -96,13 +98,22 @@ class Tester {
       maxList.push(Math.max(...data.durations));
       minList.push(Math.min(...data.durations));
     });
-    new StressTestChart({ averages, labels, maxList, minList }).draw();
+    const useMatch = this._useMatch;
+    new StressTestChart({ averages, labels, maxList, minList, useMatch }).draw();
   }
 }
 
-const stressTest = maxLength => {
-  const tester = new Tester(maxLength);
+const useMatch = maxLength => {
+  const tester = new Tester(maxLength, true);
   tester.start();
 };
 
-export default stressTest;
+const useMatchAll = maxLength => {
+  const tester = new Tester(maxLength, false);
+  tester.start();
+};
+
+export default {
+  useMatch,
+  useMatchAll,
+};
