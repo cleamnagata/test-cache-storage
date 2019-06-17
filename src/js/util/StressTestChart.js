@@ -46,7 +46,7 @@ export default class StressTestChart {
       options: {
         title: {
           display: true,
-          text: 'cacheStorage.matchAll(url, { ignoreSearch: true }. performance'
+          text: 'cacheStorage.match(url, { ignoreSearch: true }). performance'
         },
         scales: {
           yAxes: [{
